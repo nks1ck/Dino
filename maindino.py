@@ -31,32 +31,10 @@ dino_img = [pygame.image.load('img/dino0.png'), pygame.image.load('img/dino1.png
 
 img_counter = 0
 
+score = 0
+max_score = 0
 
-class Object:
-    def __init__(self, x, y, width, image, speed):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.image = image
-        self.speed = speed
-
-    def move(self):
-        if self.x >= -self.width:
-            display.blit(self.image, (self.x, self.y))
-            # pygame.draw.rect(display, (224, 121, 31), (self.x, self.y, self.width, self.height))
-            self.x -= self.speed
-            return True
-        else:
-            return False
-            # self.x = display_width + 100 + random.randrange(-80, 60)
-
-    def return_self(self, radius, y, width, image):
-        self.x = radius
-        self.y = y
-        self.width = width
-        self.image = image
-        display.blit(self.image, (self.x, self.y))
-
+above_cactus = False
 
 # dino size
 user_width = 60
@@ -81,6 +59,32 @@ clock = pygame.time.Clock()
 # jump dino
 jump_dino = False
 jump_counter = 30
+
+
+class Object:
+    def __init__(self, x, y, width, image, speed):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.image = image
+        self.speed = speed
+
+    def move(self):
+        if self.x >= -self.width:
+            display.blit(self.image, (self.x, self.y))
+            # pygame.draw.rect(display, (224, 121, 31), (self.x, self.y, self.width, self.height))
+            self.x -= self.speed
+            return True
+        else:
+            return False
+            self.x = display_width + 100 + random.randrange(-80, 60)
+
+    def return_self(self, radius, y, width, image):
+        self.x = radius
+        self.y = y
+        self.width = width
+        self.image = image
+        display.blit(self.image, (self.x, self.y))
 
 
 def run_game():
@@ -108,8 +112,14 @@ def run_game():
         if jump_dino:
             jump()
 
+        # scores counter init
+        scores_counter(cactus_arr)
+
         # background color
         display.blit(land, (0, 0))
+
+        # scores
+        print_text(f'Scores: {score}', 600, 10)
 
         # draw cactus
         draw_array(cactus_arr)
@@ -255,40 +265,47 @@ def pause():
 
 def check_collision(barriers):
     for barrier in barriers:
-        if barrier.y == 449:  # small cactus
+        if barrier.y == 449:
             if not jump:
-                if barrier.x <= user_x + user_width - 35 <= barrier.x + barrier.width:
+                if barrier.x <= user_x + user_width - 22 <= barrier.x + barrier.width:
                     return True
             elif jump_counter >= 0:
                 if user_y + user_height - 5 >= barrier.y:
-                    if barrier.x <= user_x + user_width - 25 <= barrier.x + barrier.width:
+                    if barrier.x <= user_x + user_width - 22 <= barrier.x + barrier.width:
                         return True
             else:
                 if user_y + user_height - 10 >= barrier.y:
                     if barrier.x <= user_x <= barrier.x + barrier.width:
                         return True
-
         else:
             if not jump:
-                if barrier.x <= user_x + user_width - 5 <= barrier.x + barrier.width:
+                if barrier.x <= user_x + user_width + 5 <= barrier.x + barrier.width:
                     return True
             elif jump_counter == 10:
                 if user_y + user_height - 5 >= barrier.y:
-                    if user_y + user_height - 5 >= barrier.y:
-                        if barrier.x <= user_x + user_width - 5 <= barrier.x + barrier.width:
-                            return True
-            elif jump_counter >= -1:
-                if user_y + user_height - 5 >= barrier.y:
-                    if barrier.x <= user_x + user_width - 35 <= barrier.x + barrier.width:
+                    if barrier.x <= user_x + user_width - 5 <= barrier.x + barrier.width:
                         return True
-                else:
-                    if user_y + user_height - 10 >= barrier.y:
-                        if barrier.x <= user_x + 5 <= barrier.x + barrier.width:
-                            return True
+            elif jump_counter <= 1:
+                if user_y + user_height - 2 >= barrier.y:
+                    if barrier.x <= user_x + 13 <= barrier.x + barrier.width:
+                        return True
+            elif jump_counter >= 1:
+                if user_y + user_height - 2 >= barrier.y:
+                    if barrier.x <= user_x + user_width - 22 <= barrier.x + barrier.width:
+                        return True
+            else:
+                if user_y + user_height - 3 >= barrier.y:
+                    if barrier.x <= user_x + user_width + 5 <= barrier.x + barrier.width:
+                        return True
+
     return False
 
 
 def game_over():
+    global score, max_score
+    if score > max_score:
+        max_score = score
+
     stopped = True
     while stopped:
         for event in pygame.event.get():
@@ -296,6 +313,7 @@ def game_over():
                 pygame.quit()
                 quit()
         print_text('Game Over. Press Enter to play again, Esc to exit', 40, 300)
+        print_text(f'Max scores: {max_score}', 300, 350)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
@@ -307,7 +325,26 @@ def game_over():
         clock.tick(15)
 
 
+def scores_counter(barriers):
+    global score, above_cactus
+
+    if not above_cactus:
+        for barrier in barriers:
+            if barrier.x <= user_x + user_width / 2 <= barrier.x + barrier.width:
+                if user_y + user_height - 5 <= barrier.y:
+                    above_cactus = True
+                    break
+    else:
+        if jump_counter == -30:
+            score += 1
+            above_cactus = False
+
+
 while run_game():
-    pass
+    score = 0
+    make_jump = False
+    jump_counter = 30
+    user_y = display_height - user_height - 100
+
 pygame.quit()
 quit()
