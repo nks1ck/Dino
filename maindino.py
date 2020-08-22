@@ -1,10 +1,9 @@
 import pygame
-
 import random
 
 pygame.init()
 
-# res
+# resolution
 display_width = 800
 display_height = 600
 
@@ -13,22 +12,25 @@ display = pygame.display.set_mode((display_width, display_height))
 # win title
 pygame.display.set_caption('Run,Dino! Run!')
 
-# win icon
+# window icon
 icon = pygame.image.load('img/icon.png')
 pygame.display.set_icon(icon)
 
-cactus_img = [pygame.image.load('img/Cactus0.png'), pygame.image.load('img/Cactus1.png'), pygame.image.load('img/Cactus2.png')]
+cactus_img = [pygame.image.load('img/Cactus0.png'), pygame.image.load('img/Cactus1.png'),
+              pygame.image.load('img/Cactus2.png')]
 
 cactus_options = [69, 449, 37, 410, 40, 420]
 
+# init images
 stone_img = [pygame.image.load('img/stone0.png'), pygame.image.load('img/stone1.png')]
 cloud_img = [pygame.image.load('img/cloud0.png'), pygame.image.load('img/cloud1.png')]
 
 dino_img = [pygame.image.load('img/dino0.png'), pygame.image.load('img/dino1.png'),
-              pygame.image.load('img/dino2.png'), pygame.image.load('img/dino3.png'),
-              pygame.image.load('img/dino4.png')]
+            pygame.image.load('img/dino2.png'), pygame.image.load('img/dino3.png'),
+            pygame.image.load('img/dino4.png')]
 
 img_counter = 0
+
 
 class Object:
     def __init__(self, x, y, width, image, speed):
@@ -56,10 +58,7 @@ class Object:
         display.blit(self.image, (self.x, self.y))
 
 
-
-
-
-# user size
+# dino size
 user_width = 60
 user_height = 100
 
@@ -109,8 +108,7 @@ def run_game():
         if jump_dino:
             jump()
 
-
-        # bckgrnd color
+        # background color
         display.blit(land, (0, 0))
 
         # draw cactus
@@ -143,7 +141,6 @@ def jump():
 
 
 def create_cactus(array):
-
     choice = random.randrange(0, 3)
     img = cactus_img[choice]
     width = cactus_options[choice * 2]
@@ -161,8 +158,6 @@ def create_cactus(array):
     width = cactus_options[choice * 2]
     height = cactus_options[choice * 2 + 1]
     array.append(Object(display_width + 600, height, width, img, 4))
-
-
 
 
 def find_radius(array):
@@ -224,12 +219,6 @@ def move_objects(stone, cloud):
         img_of_cloud = cloud_img[choice]
         cloud.return_self(display_width, random.randrange(10, 80), cloud.width, img_of_cloud)
 
- #def create_clouds(array):
-    #choice = random.randrange(0, 3)
-   # img = cloud_img[choice]
-    #width = cloud_options[choice * 2]
-   #height = cloud_options[choice * 2 + 1]
-    #array.append(Object(display_width + 20, height, width, img, 2))
 
 def draw_dino():
     global img_counter
@@ -239,10 +228,12 @@ def draw_dino():
     display.blit(dino_img[img_counter // 5], (user_x, user_y))
     img_counter += 1
 
-def print_text(message, x, y, font_color = (0, 0, 0), font_type = 'font/PingPong.ttf', font_size = 30):
+
+def print_text(message, x, y, font_color=(0, 0, 0), font_type='font/PingPong.ttf', font_size=30):
     font_type = pygame.font.Font(font_type, font_size)
     text = font_type.render(message, True, font_color)
     display.blit(text, (x, y))
+
 
 def pause():
     paused = True
@@ -261,16 +252,41 @@ def pause():
         pygame.display.update()
         clock.tick(15)
 
+
 def check_collision(barriers):
     for barrier in barriers:
-        if user_y + user_height >= barrier.y:
-            if barrier.x <= user_x <= barrier.x + barrier.width:
-                return True
+        if barrier.y == 449:  # small cactus
+            if not jump:
+                if barrier.x <= user_x + user_width - 35 <= barrier.x + barrier.width:
+                    return True
+            elif jump_counter >= 0:
+                if user_y + user_height - 5 >= barrier.y:
+                    if barrier.x <= user_x + user_width - 25 <= barrier.x + barrier.width:
+                        return True
+            else:
+                if user_y + user_height - 10 >= barrier.y:
+                    if barrier.x <= user_x <= barrier.x + barrier.width:
+                        return True
 
-            elif barrier.x <= user_x + user_width <= barrier.x + barrier.width:
-                return True
-
+        else:
+            if not jump:
+                if barrier.x <= user_x + user_width - 5 <= barrier.x + barrier.width:
+                    return True
+            elif jump_counter == 10:
+                if user_y + user_height - 5 >= barrier.y:
+                    if user_y + user_height - 5 >= barrier.y:
+                        if barrier.x <= user_x + user_width - 5 <= barrier.x + barrier.width:
+                            return True
+            elif jump_counter >= -1:
+                if user_y + user_height - 5 >= barrier.y:
+                    if barrier.x <= user_x + user_width - 35 <= barrier.x + barrier.width:
+                        return True
+                else:
+                    if user_y + user_height - 10 >= barrier.y:
+                        if barrier.x <= user_x + 5 <= barrier.x + barrier.width:
+                            return True
     return False
+
 
 def game_over():
     stopped = True
@@ -281,7 +297,6 @@ def game_over():
                 quit()
         print_text('Game Over. Press Enter to play again, Esc to exit', 40, 300)
 
-        # jump button
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
             return True
@@ -294,9 +309,5 @@ def game_over():
 
 while run_game():
     pass
-
 pygame.quit()
 quit()
-
-
-
