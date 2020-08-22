@@ -77,7 +77,7 @@ class Object:
             return True
         else:
             return False
-            self.x = display_width + 100 + random.randrange(-80, 60)
+            # self.x = display_width + 100 + random.randrange(-80, 60)
 
     def return_self(self, radius, y, width, image):
         self.x = radius
@@ -119,7 +119,7 @@ def run_game():
         display.blit(land, (0, 0))
 
         # scores
-        print_text(f'Scores: {score}', 600, 10)
+        print_text(f'Scores: {score}', 700, 10)
 
         # draw cactus
         draw_array(cactus_arr)
@@ -239,7 +239,7 @@ def draw_dino():
     img_counter += 1
 
 
-def print_text(message, x, y, font_color=(0, 0, 0), font_type='font/PingPong.ttf', font_size=30):
+def print_text(message, x, y, font_color=(0, 0, 0), font_type='font/Thintel.ttf', font_size=30):
     font_type = pygame.font.Font(font_type, font_size)
     text = font_type.render(message, True, font_color)
     display.blit(text, (x, y))
@@ -252,7 +252,7 @@ def pause():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        print_text('Paused. Press enter to continue ', 160, 300)
+        print_text('Paused. Press enter to continue ', 270, 300)
 
         # jump button
         keys = pygame.key.get_pressed()
@@ -312,8 +312,8 @@ def game_over():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        print_text('Game Over. Press Enter to play again, Esc to exit', 40, 300)
-        print_text(f'Max scores: {max_score}', 300, 350)
+        print_text('Game Over. Press Enter to play again, Esc to exit', 210, 300)
+        print_text(f'Max scores: {max_score}', 350, 325)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
