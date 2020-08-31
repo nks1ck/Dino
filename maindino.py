@@ -12,16 +12,24 @@ display = pygame.display.set_mode((display_width, display_height))
 # win title
 pygame.display.set_caption('Run,Dino! Run!')
 
+# Sounds
+pygame.mixer.music.load("sounds/background.mp3")
+pygame.mixer.music.set_volume(0.5)
+
+jump_sound = pygame.mixer.Sound('sounds/Jump.wav')
+fall_sound = pygame.mixer.Sound('sounds/Bdish.wav')
+
 # window icon
 icon = pygame.image.load('img/icon.png')
 pygame.display.set_icon(icon)
 
+
+# init images
 cactus_img = [pygame.image.load('img/Cactus0.png'), pygame.image.load('img/Cactus1.png'),
               pygame.image.load('img/Cactus2.png')]
 
 cactus_options = [69, 449, 37, 410, 40, 420]
 
-# init images
 stone_img = [pygame.image.load('img/stone0.png'), pygame.image.load('img/stone1.png')]
 cloud_img = [pygame.image.load('img/cloud0.png'), pygame.image.load('img/cloud1.png')]
 
@@ -92,6 +100,7 @@ def run_game():
     game = True
     cactus_arr = []
     create_cactus(cactus_arr)
+    pygame.mixer.music.play(-1)
     land = pygame.image.load('img/background.png')
 
     stone, cloud = open_random_objects()
@@ -111,6 +120,7 @@ def run_game():
 
         if jump_dino:
             jump()
+            # TODO Jump Sound
 
         # scores counter init
         scores_counter(cactus_arr)
@@ -131,6 +141,8 @@ def run_game():
         draw_dino()
 
         if check_collision(cactus_arr):
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(fall_sound)
             game = False
 
         pygame.display.update()
@@ -143,6 +155,10 @@ def run_game():
 def jump():
     global user_y, jump_dino, jump_counter
     if jump_counter >= -30:
+        if jump_counter == 30:
+            pygame.mixer.Sound.play(jump_sound)
+        if jump_counter == -30:
+            pygame.mixer.Sound.play(fall_sound)
         user_y -= jump_counter / 2.5
         jump_counter -= 1
     else:
@@ -246,6 +262,7 @@ def print_text(message, x, y, font_color=(0, 0, 0), font_type='font/Thintel.ttf'
 
 
 def pause():
+    pygame.mixer.music.pause()
     paused = True
     while paused:
         for event in pygame.event.get():
@@ -261,6 +278,7 @@ def pause():
 
         pygame.display.update()
         clock.tick(15)
+    pygame.mixer.music.unpause()
 
 
 def check_collision(barriers):
