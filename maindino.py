@@ -10,7 +10,7 @@ display_height = 600
 display = pygame.display.set_mode((display_width, display_height))
 
 # win title
-pygame.display.set_caption('Run,Dino! Run!')
+pygame.display.set_caption('Run, Dino! Run!')
 
 # Sounds
 pygame.mixer.music.load("sounds/background.mp3")
@@ -30,11 +30,14 @@ cactus_img = [pygame.image.load('img/Cactus0.png'), pygame.image.load('img/Cactu
 
 cactus_options = [69, 449, 37, 410, 40, 420]
 
-stone_img = [pygame.image.load('img/stone0.png'), pygame.image.load('img/stone1.png')]
-cloud_img = [pygame.image.load('img/cloud0.png'), pygame.image.load('img/cloud1.png')]
+stone_img = [pygame.image.load('img/stone0.png'),
+             pygame.image.load('img/stone1.png')]
+cloud_img = [pygame.image.load('img/cloud0.png'),
+             pygame.image.load('img/cloud1.png')]
 
 dino_img = [pygame.image.load('img/dino0.png'), pygame.image.load('img/dino1.png'),
-            pygame.image.load('img/dino2.png'), pygame.image.load('img/dino3.png'),
+            pygame.image.load(
+                'img/dino2.png'), pygame.image.load('img/dino3.png'),
             pygame.image.load('img/dino4.png')]
 
 img_counter = 0
@@ -237,13 +240,15 @@ def move_objects(stone, cloud):
     if not check:
         choice = random.randrange(0, 2)
         img_of_stone = stone_img[choice]
-        stone.return_self(display_width, 500 + random.randrange(10, 80), stone.width, img_of_stone)
+        stone.return_self(display_width, 500 +
+                          random.randrange(10, 80), stone.width, img_of_stone)
 
     check = cloud.move()
     if not check:
         choice = random.randrange(0, 2)
         img_of_cloud = cloud_img[choice]
-        cloud.return_self(display_width, random.randrange(10, 80), cloud.width, img_of_cloud)
+        cloud.return_self(display_width, random.randrange(
+            10, 80), cloud.width, img_of_cloud)
 
 
 def draw_dino():
