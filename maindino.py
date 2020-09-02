@@ -118,7 +118,11 @@ class Button:
                 pygame.mixer.Sound.play(button_sound)
                 pygame.time.delay(300)
                 if action is not None:
-                    action()
+                    if action == quit:
+                        pygame.quit()
+                        quit()
+                    else:
+                        action()
 
         else:
             pygame.draw.rect(display, self.inactive_color,
@@ -152,7 +156,6 @@ def game_cycle():
 
         if jump_dino:
             jump()
-            # TODO Jump Sound
 
         # scores counter init
         scores_counter(cactus_arr)
@@ -397,6 +400,7 @@ def show_menu():
     show = True
     
     start_button = Button(150, 70)
+    quit_button = Button(150, 70)
     
 
     while show:
@@ -408,6 +412,7 @@ def show_menu():
         display.blit(menu_background, (0, 0))
 
         start_button.draw(330, 200, 'Start game', start_game, 50)
+        quit_button.draw(330, 300, 'Leave :(((', quit, 50)
         pygame.display.update()
         clock.tick(60)
 
